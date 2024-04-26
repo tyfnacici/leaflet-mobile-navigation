@@ -33,6 +33,7 @@
 <!-- leaflet js  -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js" defer></script>
 <script>
     // Map initialization
     var map = L.map("map").setView([39.57, 32.53], 6)
@@ -81,21 +82,15 @@
             const a = L.Routing.control({
                 waypoints: [L.latLng(lat, long), L.latLng(39.57, 32.53)],
                 autoRoute: true,
-                showAlternatives: false
+                showAlternatives: false,
+                collapsible: true,
+                show: false
             }).on("routesfound", (e) => {
                     // L.Routing.Formatter().formatInstruction()
-                    // console.log(e)
+                    console.log(e)
                     // routes = e.routes[0]
                 })
                 .addTo(map)
-
-                console.log(a.getWaypoints())
-
-            // L.Routing.Itinerary({
-            //     collapsible: true,
-            // })
-
-            // console.log(IInstruction.distance)
             navigation = true
         }
 
