@@ -2,12 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Realtime location tracker</title>
 
     <!-- leaflet css  -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
     <style>
         body {
@@ -30,21 +32,30 @@
 
 <!-- leaflet js  -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script>
-    // Map initialization 
-    var map = L.map('map').setView([41.4385, 31.7845], 13);
+    // Map initialization
+    var map = L.map("map").setView([39.57, 32.53], 6)
+
+    var navigation = false
+
+    // var icon = L.icon({
+    //     iconUrl: 'img/',
+    //     iconSize: [70,70]
+    // })
 
     //osm layer
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-    osm.addTo(map);
+    var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    })
+    osm.addTo(map)
 
     setInterval(() => {
         navigator.geolocation.getCurrentPosition(getPosition)
-    }, 5000);
+    }, 2000)
 
-    var marker, circle;
+    var marker, circle
 
     function getPosition(position) {
         var lat = position.coords.latitude
@@ -64,9 +75,39 @@
 
         var featureGroup = L.featureGroup([marker, circle]).addTo(map)
 
+        var pointer = L.marker([])
+
+        if (!navigation) {
+            const a = L.Routing.control({
+                waypoints: [L.latLng(lat, long), L.latLng(39.57, 32.53)],
+                autoRoute: true,
+                showAlternatives: false
+            }).on("routesfound", (e) => {
+                    // L.Routing.Formatter().formatInstruction()
+                    // console.log(e)
+                    // routes = e.routes[0]
+                })
+                .addTo(map)
+
+                console.log(a.getWaypoints())
+
+            // L.Routing.Itinerary({
+            //     collapsible: true,
+            // })
+
+            // console.log(IInstruction.distance)
+            navigation = true
+        }
+
         map.fitBounds(featureGroup.getBounds())
 
-        console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
+        console.log(
+            "Your coordinate is: Lat: " +
+            lat +
+            " Long: " +
+            long +
+            " Accuracy: " +
+            accuracy
+        )
     }
-
 </script>
